@@ -1,0 +1,31 @@
+{
+  "name": "natours-express",
+  "version": "1.0.0",
+  "description": "natours project with express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viamazoba/natours-express.git"
+  },
+  "keywords": [
+    "express",
+    "natours"
+  ],
+  "author": "viamazoba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viamazoba/natours-express/issues"
+  },
+  "homepage": "https://github.com/viamazoba/natours-express#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
+  },
+  "devDependencies": {
+    "colors": "^1.4.0"
+  }
+}
