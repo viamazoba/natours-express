@@ -1,10 +1,26 @@
 // Esta librería lleva las variables de entorno a las de node
 // Así se pueden utilizar en cuelaquier lugar
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
 dotenv.config({
-	path: './config.env'
+	path: './.env'
 });
+// console.log(process.env.DATABASE);
+const DB = process.env.DATABASE.replace(
+	'<PASSWORD>',
+	process.env.DATABASE_PASSWORD
+);
+
+mongoose
+	.connect(DB, {
+		useNewUrlParser: true,
+		useCreateIndex: true,
+		useFindAndModify: false
+	})
+	.then(() => {
+		console.log('DB conecction successful!');
+	});
 
 // eslint-disable-next-line import/no-extraneous-dependencies, node/no-unpublished-require
 const colors = require('colors');
