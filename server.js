@@ -22,6 +22,39 @@ mongoose
 		console.log('DB conecction successful!');
 	});
 
+const tourSchema = new mongoose.Schema({
+	name: {
+		type: String,
+		require: [true, 'A tour must have a name'],
+		unique: true
+	},
+	rating: {
+		type: Number,
+		default: 4.5
+	},
+	price: {
+		type: Number,
+		require: [true, 'A tour must have a price']
+	}
+});
+
+const Tour = mongoose.model('Tour', tourSchema);
+
+const testTour = new Tour({
+	name: 'The Forest Hiker',
+	rating: 4.7,
+	price: 497
+});
+
+testTour
+	.save()
+	.then(doc => {
+		console.log(doc);
+	})
+	.catch(err => {
+		console.log('Error: ', err);
+	});
+
 // eslint-disable-next-line import/no-extraneous-dependencies, node/no-unpublished-require
 const colors = require('colors');
 const app = require('./app');
