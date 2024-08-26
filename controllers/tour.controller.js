@@ -18,6 +18,7 @@ exports.getAllTours = async (req, res) => {
 
 		let query = Tour.find(JSON.parse(queryStr));
 
+		// Sorting the results
 		if (req.query.sort) {
 			const sortBy = req.query.sort.split(',').join(' ');
 			// Puedes seguir usando métodos sobre el query que se obtiene de MongoDB
@@ -25,6 +26,15 @@ exports.getAllTours = async (req, res) => {
 		} else {
 			// Así se ordenan por defecto los creados más recientemente
 			query = query.sort('-createdAt')
+		}
+
+		// Field Limiting
+		if (req.query.fields) {
+			const fields = req.query.fields.split(',').join(' ');
+			query = query.select(fields);
+		} else {
+			// Con el menos sólo se excluye este campo
+			query.select('-__v')
 		}
 
 		// Execute Query
