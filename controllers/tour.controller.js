@@ -16,7 +16,16 @@ exports.getAllTours = async (req, res) => {
 		let queryStr = JSON.stringify(queryObj);
 		queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
-		const query = Tour.find(JSON.parse(queryStr));
+		let query = Tour.find(JSON.parse(queryStr));
+
+		if (req.query.sort) {
+			const sortBy = req.query.sort.split(',').join(' ');
+			// Puedes seguir usando métodos sobre el query que se obtiene de MongoDB
+			query = query.sort(sortBy);
+		} else {
+			// Así se ordenan por defecto los creados más recientemente
+			query = query.sort('-createdAt')
+		}
 
 		// Execute Query
 		const tours = await query;
