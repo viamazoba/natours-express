@@ -79,7 +79,7 @@ exports.updateTour = async (req, res) => {
 	try {
 		const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
-			runValidators: true // Para que se validen los campos ingresados a MongoDB
+			runValidators: true // Para que se validen los campos ingresados a MongoDB, los que defines en el schema
 		})
 
 		res.status(200).json({
