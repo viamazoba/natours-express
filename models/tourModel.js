@@ -70,7 +70,11 @@ const tourSchema = new mongoose.Schema({
         default: Date.now(),
         select: false // Se esconde de la sección por razones de seguridad
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
 }, {
     toJSON: {
         virtuals: true
@@ -89,6 +93,16 @@ tourSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
+
+// Query Middleware
+// Puedes utilizar regex por ejmplo para todos los queries que impliquen find (find, findOne, etc.) --> /^find/ en vez de 'find'
+tourSchema.pre('find', function (next) {
+    this.find({
+        secretTour: { $ne: true }
+    })
+    next();
+})
+
 
 const Tour = mongoose.model('Tour', tourSchema);
 
