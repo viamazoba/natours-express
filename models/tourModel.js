@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 
 const DB = process.env.DATABASE.replace(
     '<PASSWORD>',
@@ -25,7 +26,14 @@ const tourSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         maxlength: [40, 'A tour name must have less or equal then 40 characters'],
-        minlength: [10, 'A tour name must have more or equal then 10 characters']
+        minlength: [10, 'A tour name must have more or equal then 10 characters'],
+        validate: {
+            validator: function (value) {
+                // Aquí validas con librería de que el nombre no contenga números
+                return validator.isAlpha(value.split(' ').join(''));
+            },
+            message: 'Tour name must only contain characters.'
+        }
     },
     slug: String,
     duration: {
@@ -58,7 +66,16 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         require: [true, 'A tour must have a price']
     },
-    priceDiscount: Number,
+    priceDiscount: {
+        type: Number,
+        validate: {
+            validator: function (val) {
+                // Esta validación sólo sirve para los documentos creados, no para las actualizaciones de documentos
+                return val < this.price;
+            },
+            message: 'Discount price ({VALUE}) should be below regular price'
+        }
+    },
     summery: {
         type: String,
         trim: true,
@@ -84,6 +101,7 @@ const tourSchema = new mongoose.Schema({
         default: false
     }
 }, {
+    // Esto es para que las propiedades virtuales (calculadas) se muestren en tus documentos
     toJSON: {
         virtuals: true
     },
