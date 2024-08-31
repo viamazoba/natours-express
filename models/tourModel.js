@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const DB = process.env.DATABASE.replace(
     '<PASSWORD>',
@@ -24,6 +25,7 @@ const tourSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    slug: String,
     duration: {
         type: Number,
         require: [true, 'A tour must have a duration']
@@ -81,6 +83,12 @@ const tourSchema = new mongoose.Schema({
 tourSchema.virtual('durationWeeks').get(function () {
     return this.durations / 7
 })
+
+// Document middleware: runs before .save()  and .create() (crear un tour)
+tourSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true });
+    next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
