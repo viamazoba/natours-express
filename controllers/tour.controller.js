@@ -37,7 +37,16 @@ exports.getAllTours = async (req, res) => {
 
 exports.getTourById = async (req, res) => {
 	try {
-		const tour = await Tour.findById(req.params.id)
+		const tour = await Tour.findById(req.params.id);
+
+		if (!tour) {
+			// Si tomas un ID válido y le cambias una letra, mongo no lo ve como un error
+			// Pero te envía un tour en null, por eso es importante este condicional
+			const error = new Error('Tour not found with that ID');
+			error.statusCode = 404;
+			throw error;
+		}
+
 		res.status(200).json({
 			status: 'success',
 			data: {
@@ -45,9 +54,9 @@ exports.getTourById = async (req, res) => {
 			}
 		})
 	} catch (error) {
-		res.status(404).json({
+		res.status(error.statusCode || 500).json({
 			status: 'fail',
-			message: error
+			message: error.message || 'An error occurred'
 		})
 	}
 };
@@ -82,6 +91,14 @@ exports.updateTour = async (req, res) => {
 			runValidators: true // Para que se validen los campos ingresados a MongoDB, los que defines en el schema
 		})
 
+		if (!tour) {
+			// Si tomas un ID válido y le cambias una letra, mongo no lo ve como un error
+			// Pero te envía un tour en null, por eso es importante este condicional
+			const error = new Error('Tour not found with that ID');
+			error.statusCode = 404;
+			throw error;
+		}
+
 		res.status(200).json({
 			status: 'success',
 			data: {
@@ -90,9 +107,9 @@ exports.updateTour = async (req, res) => {
 		});
 	} catch (error) {
 
-		res.status(404).json({
+		res.status(error.statusCode || 500).json({
 			status: 'fail',
-			message: error
+			message: error.message || 'An error occurred'
 		})
 	}
 };
@@ -100,16 +117,25 @@ exports.updateTour = async (req, res) => {
 exports.deleteTour = async (req, res) => {
 	try {
 
-		await Tour.findByIdAndDelete(req.params.id)
+		const tour = await Tour.findByIdAndDelete(req.params.id);
+
+		if (!tour) {
+			// Si tomas un ID válido y le cambias una letra, mongo no lo ve como un error
+			// Pero te envía un tour en null, por eso es importante este condicional
+			const error = new Error('Tour not found with that ID');
+			error.statusCode = 404;
+			throw error;
+		}
+
 		res.status(204).json({
 			status: 'success',
 			data: null
 		});
 
 	} catch (error) {
-		res.status(404).json({
+		res.status(error.statusCode || 500).json({
 			status: 'fail',
-			message: error
+			message: error.message || 'An error occurred'
 		})
 	}
 };
