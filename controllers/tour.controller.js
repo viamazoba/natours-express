@@ -120,10 +120,16 @@ exports.updateTour = async (req, res) => {
 			}
 		});
 	} catch (error) {
+		const err = { ...error }
 
-		res.status(error.statusCode || 500).json({
+		if (error._message === 'Validation failed') {
+			err.statusCode = 400;
+			err.message = error.message
+		}
+
+		res.status(err.statusCode || 500).json({
 			status: 'fail',
-			message: error.message || 'An error occurred'
+			message: err.message || 'An error occurred'
 		})
 	}
 };
