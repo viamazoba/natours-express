@@ -81,9 +81,17 @@ exports.createNewTour = async (req, res) => {
 		});
 
 	} catch (error) {
-		res.status(400).json({
+		const err = { ...error }
+
+		if (error.code === 11000) {
+			const value = Object.values(err.keyValue)[0];
+			err.message = `Duplicate field value: ${value}. Please use another value`;
+			err.statusCode = 400;
+		}
+
+		res.status(err.statusCode || 500).json({
 			status: 'fails',
-			message: error
+			message: err.message
 		})
 	}
 
