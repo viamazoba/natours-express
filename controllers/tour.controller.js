@@ -54,9 +54,15 @@ exports.getTourById = async (req, res) => {
 			}
 		})
 	} catch (error) {
-		res.status(error.statusCode || 500).json({
+		const err = { ...error }
+
+		if (error.name === 'CastError') {
+			err.message = `Invalid ${err.path}: ${err.value}`
+		}
+
+		res.status(err.statusCode || 500).json({
 			status: 'fail',
-			message: error.message || 'An error occurred'
+			message: err.message || 'An error occurred'
 		})
 	}
 };
