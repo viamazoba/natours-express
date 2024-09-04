@@ -19,6 +19,12 @@ mongoose
         console.log('DB conecction successful!');
     });
 
+// Manejo de errores de conexión con la base de datos
+process.on('unhandleRejection', err => {
+    console.log(err.name, err.message);
+    process.exit(1);
+});
+
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
